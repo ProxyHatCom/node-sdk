@@ -1,0 +1,56 @@
+{
+  "name": "proxyhat",
+  "version": "0.1.0",
+  "description": "The official Node.js/TypeScript SDK for the ProxyHat residential proxy API",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProxyHatCom/node-sdk.git"
+  },
+  "homepage": "https://proxyhat.com",
+  "bugs": {
+    "url": "https://github.com/ProxyHatCom/node-sdk/issues"
+  },
+  "keywords": [
+    "proxyhat",
+    "proxy",
+    "residential-proxy",
+    "sdk",
+    "api-client",
+    "typescript",
+    "web-scraping"
+  ],
+  "author": "ProxyHat",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}
