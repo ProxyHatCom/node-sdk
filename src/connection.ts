@@ -41,10 +41,19 @@ function slug(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, "_");
 }
 
-/** Random lowercase hex string via the universal Web Crypto API (Node 18+, browsers, edge). */
+/**
+ * Random lowercase hex string. Uses Web Crypto when available (browsers, edge,
+ * Node 19+); falls back to Math.random on older runtimes (Node 18). A sticky
+ * session id is a routing key, not a secret, so the fallback is fine.
+ */
 function randomHex(bytes: number): string {
   const arr = new Uint8Array(bytes);
-  crypto.getRandomValues(arr);
+  const webcrypto = (globalThis as { crypto?: { getRandomValues?(a: Uint8Array): void } }).crypto;
+  if (webcrypto?.getRandomValues) {
+    webcrypto.getRandomValues(arr);
+  } else {
+    for (let i = 0; i < bytes; i++) arr[i] = Math.floor(Math.random() * 256);
+  }
   return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
