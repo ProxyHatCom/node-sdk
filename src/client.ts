@@ -13,6 +13,7 @@ import {
   LocationsResource,
   AnalyticsResource,
   ProxyPresetsResource,
+  ProxyDescriptorsResource,
   ProfileResource,
   TwoFactorResource,
   EmailResource,
@@ -20,6 +21,7 @@ import {
   PlansResource,
   PaymentsResource,
 } from "./resources/index.js";
+import { buildConnectionUrl, type ConnectionTargeting, type ProxyProtocol } from "./connection.js";
 
 const DEFAULT_BASE_URL = "https://api.proxyhat.com/v1";
 const DEFAULT_TIMEOUT = 30000;
@@ -47,6 +49,7 @@ export class ProxyHat {
   readonly locations: LocationsResource;
   readonly analytics: AnalyticsResource;
   readonly proxy_presets: ProxyPresetsResource;
+  readonly proxy_descriptors: ProxyDescriptorsResource;
   readonly profile: ProfileResource;
   readonly two_factor: TwoFactorResource;
   readonly email: EmailResource;
@@ -65,12 +68,49 @@ export class ProxyHat {
     this.locations = new LocationsResource(this);
     this.analytics = new AnalyticsResource(this);
     this.proxy_presets = new ProxyPresetsResource(this);
+    this.proxy_descriptors = new ProxyDescriptorsResource(this);
     this.profile = new ProfileResource(this);
     this.two_factor = new TwoFactorResource(this);
     this.email = new EmailResource(this);
     this.coupons = new CouponsResource(this);
     this.plans = new PlansResource(this);
     this.payments = new PaymentsResource(this);
+  }
+
+  /**
+   * Get a ready-to-use residential proxy connection URL — the fast path from an
+   * API key to actually using proxies. Looks up your sub-users, picks an active
+   * one with remaining traffic (or the one named by `subUser`), and builds the
+   * gateway URL locally with your targeting.
+   *
+   * ```ts
+   * const proxy = new ProxyHat({ apiKey });
+   * const url = await proxy.connectionUrl({ country: "us" });
+   * // → http://<user>-country-us:<pass>@gate.proxyhat.com:8080
+   * ```
+   */
+  async connectionUrl(
+    options: ConnectionTargeting & { subUser?: string; protocol?: ProxyProtocol } = {},
+  ): Promise<string> {
+    const list = await this.sub_users.list();
+    const want = options.subUser?.trim();
+    const usable = list.filter(
+      (s) => !s.suspended_at && (s.traffic_limit === 0 || s.used_traffic < s.traffic_limit),
+    );
+    const chosen = want ? list.find((s) => s.uuid === want || s.name === want) : usable[0];
+
+    if (!chosen?.proxy_username || !chosen?.proxy_password) {
+      throw new Error(
+        want
+          ? `No sub-user matched "${want}" (or it has no proxy credentials).`
+          : "No usable sub-user found (all suspended or out of traffic). Create one, top up, or pass { subUser }.",
+      );
+    }
+    return buildConnectionUrl({
+      username: chosen.proxy_username,
+      password: chosen.proxy_password,
+      ...options,
+    });
   }
 
   private buildHeaders(): Record<string, string> {

@@ -4,6 +4,7 @@ export { SubUserGroupsResource } from "./sub-user-groups.js";
 export { LocationsResource } from "./locations.js";
 export { AnalyticsResource } from "./analytics.js";
 export { ProxyPresetsResource } from "./proxy-presets.js";
+export { ProxyDescriptorsResource } from "./proxy-descriptors.js";
 export { ProfileResource } from "./profile.js";
 export { TwoFactorResource } from "./two-factor.js";
 export { EmailResource } from "./email.js";

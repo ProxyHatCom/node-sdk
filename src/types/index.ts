@@ -31,6 +31,7 @@ export type {
 } from "./analytics.js";
 
 export type { ProxyPreset } from "./proxy-preset.js";
+export type { ProxyDescriptor, ProxyDescriptorInput } from "./proxy-descriptor.js";
 
 export type { Preferences, APIKey } from "./profile.js";
 

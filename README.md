@@ -9,7 +9,9 @@ The official Node.js/TypeScript SDK for the [ProxyHat](https://proxyhat.com?utm_
 
 ## Features
 
+- **One-call proxy connection** — `client.connectionUrl()` turns your API key into a ready-to-use residential proxy URL
 - Full coverage of the ProxyHat API
+- Local gateway URL builder (`buildConnectionUrl`) — no network needed
 - TypeScript types for all API responses
 - Native `fetch` — no external HTTP dependencies
 - Comprehensive error handling with typed exceptions
@@ -44,6 +46,55 @@ const newUser = await client.sub_users.create({
 console.log(newUser.uuid);
 ```
 
+## Connecting to a proxy
+
+From an API key to actually routing traffic in one call — the SDK looks up an active sub-user and builds the gateway URL for you:
+
+```typescript
+import { ProxyHat } from "proxyhat";
+
+const proxy = new ProxyHat({ apiKey: "ph_your_api_key" });
+
+// Rotating residential IP, US exit:
+const url = await proxy.connectionUrl({ country: "us" });
+// → http://<user>-country-us:<pass>@gate.proxyhat.com:8080
+
+// Sticky session (same IP for 30m), city-targeted, SOCKS5:
+const sticky = await proxy.connectionUrl({
+  country: "de",
+  city: "berlin",
+  sticky: "30m",
+  protocol: "socks5",
+});
+```
+
+Use the URL with any HTTP client (undici, axios, Playwright, curl…).
+
+**Offline builder** — if you already have a sub-user's `proxy_username` / `proxy_password`, build the URL with no network call:
+
+```typescript
+import { buildConnectionUrl } from "proxyhat";
+
+const url = buildConnectionUrl({
+  username: "ph-8f2a1c",
+  password: "PxSecret123",
+  country: "gb",
+  filter: "high", // AI IP-quality tier
+});
+```
+
+**Server-built descriptor** — let the API assemble it (validates the sub-user is active):
+
+```typescript
+const d = await proxy.proxy_descriptors.create({
+  sub_user_uuid: user.uuid,
+  protocol: "http",
+  location: { country: "us", city: "new_york" },
+  session: { mode: "sticky", ttl: "30m" },
+});
+console.log(d.url);
+```
+
 ## Authentication
 
 Get your API key from the [ProxyHat Dashboard](https://dashboard.proxyhat.com/register?utm_source=github&utm_medium=readme&utm_campaign=sdk-node&utm_content=signup).
@@ -60,6 +111,8 @@ See the [Authentication Guide](https://docs.proxyhat.com/authentication?utm_sour
 | `client.locations` | `countries`, `regions`, `cities`, `isps`, `zipcodes` |
 | `client.analytics` | `traffic`, `traffic_total`, `requests`, `requests_total`, `domain_breakdown` |
 | `client.proxy_presets` | `list`, `create`, `get`, `update`, `delete` |
+| `client.proxy_descriptors` | `create` |
+| `client.connectionUrl(opts)` | build a ready proxy URL from an active sub-user |
 | `client.profile` | `get_preferences`, `update_preferences`, `list_api_keys`, `create_api_key`, `delete_api_key`, `regenerate_api_key` |
 | `client.two_factor` | `status`, `enable`, `confirm`, `disable`, `qr_code`, `recovery_codes`, `disable_by_recovery`, `change_password` |
 | `client.email` | `request_change`, `confirm_change`, `cancel_change`, `resend_verification` |

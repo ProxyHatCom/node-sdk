@@ -1,6 +1,6 @@
 {
   "name": "proxyhat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The official Node.js/TypeScript SDK for the ProxyHat residential proxy API",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -24,7 +24,8 @@
     "build": "tsup",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",

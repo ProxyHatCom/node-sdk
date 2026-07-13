@@ -2,6 +2,20 @@ export { ProxyHat } from "./client.js";
 export type { ProxyHatOptions, RequestOptions } from "./client.js";
 
 export {
+  buildConnectionUrl,
+  buildProxyUsername,
+  PROXYHAT_GATEWAY,
+  PROXYHAT_PORT_HTTP,
+  PROXYHAT_PORT_SOCKS5,
+} from "./connection.js";
+export type {
+  ConnectionTargeting,
+  BuildConnectionUrlOptions,
+  ProxyProtocol,
+  ProxyFilter,
+} from "./connection.js";
+
+export {
   ProxyHatError,
   AuthenticationError,
   PermissionError,
@@ -32,6 +46,8 @@ export type {
   DomainBreakdownItem,
   DomainBreakdownResponse,
   ProxyPreset,
+  ProxyDescriptor,
+  ProxyDescriptorInput,
   Preferences,
   APIKey,
   TwoFactorStatus,
