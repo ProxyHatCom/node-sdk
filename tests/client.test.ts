@@ -58,7 +58,7 @@ describe("ProxyHat client", () => {
 
     const callArgs = fetchMock.mock.calls[0];
     expect(callArgs[1].headers["Authorization"]).toBe("Bearer ph_test_key");
-    expect(callArgs[1].headers["User-Agent"]).toBe("proxyhat-node/0.1.0");
+    expect(callArgs[1].headers["User-Agent"]).toBe("proxyhat-node/0.2.1");
     expect(callArgs[1].headers["Accept"]).toBe("application/json");
   });
 

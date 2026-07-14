@@ -25,7 +25,8 @@ import { buildConnectionUrl, type ConnectionTargeting, type ProxyProtocol } from
 
 const DEFAULT_BASE_URL = "https://api.proxyhat.com/v1";
 const DEFAULT_TIMEOUT = 30000;
-const USER_AGENT = "proxyhat-node/0.1.0";
+// Keep in sync with the "version" field in package.json.
+const USER_AGENT = "proxyhat-node/0.2.1";
 
 export interface ProxyHatOptions {
   apiKey?: string;
