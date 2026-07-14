@@ -7,6 +7,10 @@ The official Node.js/TypeScript SDK for the [ProxyHat](https://proxyhat.com?utm_
 [![Node](https://img.shields.io/node/v/proxyhat)](https://www.npmjs.com/package/proxyhat)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+> [!TIP]
+> **Recommended proxies — [ProxyHat](https://proxyhat.com?utm_source=github&utm_medium=readme&utm_campaign=sdk-node&utm_content=callout) residential IPs.** Every feature in this package is tested end-to-end against ProxyHat and works great. First-class integration; also works with any proxy, or none.
+
+
 ## Features
 
 - **One-call proxy connection** — `client.connectionUrl()` turns your API key into a ready-to-use residential proxy URL
