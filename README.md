@@ -63,9 +63,11 @@ const proxy = new ProxyHat({ apiKey: "ph_your_api_key" });
 const url = await proxy.connectionUrl({ country: "us" });
 // → http://<user>-country-us:<pass>@gate.proxyhat.com:8080
 
-// Sticky session (same IP for 30m), city-targeted, SOCKS5:
+// Sticky session (same IP for 30m), city-targeted, SOCKS5.
+// A city always needs its region (codes from client.locations.regions/cities):
 const sticky = await proxy.connectionUrl({
   country: "de",
+  region: "state_of_berlin",
   city: "berlin",
   sticky: "30m",
   protocol: "socks5",
@@ -93,7 +95,7 @@ const url = buildConnectionUrl({
 const d = await proxy.proxy_descriptors.create({
   sub_user_uuid: user.uuid,
   protocol: "http",
-  location: { country: "us", city: "new_york" },
+  location: { country: "us", region: "new_york", city: "new_york_city" },
   session: { mode: "sticky", ttl: "30m" },
 });
 console.log(d.url);
